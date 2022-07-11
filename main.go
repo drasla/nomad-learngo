@@ -1,9 +1,14 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
-	fmt.Println("Hello world")
+	const name string = "nico"
+	fmt.Println(name)
+
+	var nickName string = "lynn"
+	fmt.Println(nickName)
+
+	secondName := "nomad"
+	fmt.Println(secondName)
 }
