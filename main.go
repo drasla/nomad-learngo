@@ -1,12 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	accounts "nomad-learngo/banking"
+)
 
 func main() {
-	nico := map[string]string{"name": "nico", "age": "12"}
-	fmt.Println(nico)
-
-	for key, value := range nico {
-		fmt.Println(key, value)
-	}
+	account := accounts.NewAccount("nico")
+	fmt.Println(account)
 }
