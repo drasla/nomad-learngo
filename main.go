@@ -2,22 +2,37 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"net/http"
 )
 
+type result struct {
+	url    string
+	status string
+}
+
 func main() {
-	c := make(chan string)
-	people := [2]string{"nico", "lynn"}
-	for _, person := range people {
-		go isSexy(person, c)
+	c := make(chan result)
+	urls := []string{
+		"https://www.airbnb.com/",
+		"https://www.google.com/",
+		"https://www.amazon.com/",
+		"https://www.reddit.com/",
+		"https://www.soundcloud.com/",
+		"https://www.facebook.com/",
+		"https://www.instragram.com/",
 	}
-	for i := 0; i < len(people); i++ {
-		fmt.Println(<-c)
+
+	for _, url := range urls {
+		go hitURL(url, c)
 	}
 }
 
-func isSexy(person string, c chan string) {
-	time.Sleep(time.Second * 5)
-	fmt.Println(person)
-	c <- person + "is sexy"
+func hitURL(url string, c chan<- result) {
+	fmt.Println("Checking: ", url)
+	response, err := http.Get(url)
+	if err != nil || response.StatusCode >= 400 {
+		c <- result{url: url, status: "FAILDED"}
+	} else {
+		c <- result{url: url, status: "OK"}
+	}
 }
