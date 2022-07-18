@@ -1,20 +1,46 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"nomad-learngo/mydict"
+	"net/http"
 )
 
 func main() {
-	dictionary := mydict.Dictionary{}
-	baseWord := "hello"
-	dictionary.Add(baseWord, "First")
-	dictionary.Search(baseWord)
-	dictionary.Delete(baseWord)
-	word, err := dictionary.Search(baseWord)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(word)
+	var results = make(map[string]string)
+
+	urls := []string{
+		"https://www.airbnb.com/",
+		"https://www.google.com/",
+		"https://www.amazon.com/",
+		"https://www.reddit.com/",
+		"https://www.soundcloud.com/",
+		"https://www.facebook.com/",
+		"https://www.instragram.com/",
 	}
+
+	for _, url := range urls {
+		result := "OK"
+		err := hitURL(url)
+		if err != nil {
+			result = "FAIL"
+		}
+		results[url] = result
+	}
+
+	for url, result := range results {
+		fmt.Println(url, result)
+	}
+}
+
+var errRequestFailed = errors.New("Request failed")
+
+func hitURL(url string) error {
+	fmt.Println("Checking: ", url)
+	response, err := http.Get(url)
+	if err == nil || response.StatusCode >= 400 {
+		fmt.Println(err, response.StatusCode)
+		return errRequestFailed
+	}
+	return nil
 }
